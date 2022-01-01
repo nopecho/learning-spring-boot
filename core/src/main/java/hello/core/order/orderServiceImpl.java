@@ -1,17 +1,19 @@
 package hello.core.order;
 
 import hello.core.discount.DiscountPolicy;
-import hello.core.discount.FixDiscountPolicy;
-import hello.core.discount.RateDiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
 import hello.core.member.MemmoryMemberRepository;
 
 public class orderServiceImpl implements orderService{
 
-    private final MemberRepository memberRepository = new MemmoryMemberRepository();
-//    private final DiscountPolicy discountPolicy = new FixDiscountPolicy(); 
-    private final DiscountPolicy discountPolicy = new RateDiscountPolicy(); //할인 정책이 바뀐다면 OrderServiceImpl코드를 고쳐야함
+    private final MemberRepository memberRepository;
+    private final DiscountPolicy discountPolicy; //DIP를 지키기위해 인터페이스에만 의존하도록 변경, BUT 구현체가 없기때문에 NPE발생!
+
+    public orderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) { //외부에서 생성자를 통해 구현체를 주입해줌
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
 
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {

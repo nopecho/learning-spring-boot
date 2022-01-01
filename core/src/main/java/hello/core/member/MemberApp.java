@@ -1,10 +1,13 @@
 package hello.core.member;
 
+import hello.core.AppConfig;
+
 public class MemberApp {
     public static void main(String[] args) {
 
         //매인메소드로 테스트
-        MemberService memberService = new MemberServiceImpl();
+        AppConfig appConfig = new AppConfig();
+        MemberService memberService = appConfig.memberService();
         Member member = new Member(1L,"MemberA",Grade.VIP);
         memberService.join(member);
 
