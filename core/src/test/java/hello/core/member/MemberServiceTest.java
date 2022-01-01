@@ -2,11 +2,19 @@ package hello.core.member;
 
 import hello.core.AppConfig;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class MemberServiceTest {
-    AppConfig appConfig = new AppConfig();
-    MemberService memberService = appConfig.memberService();
+    MemberService memberService;
+
+    @BeforeEach //BeforEach 테스트가 run 되기전 실행되는 메소드
+    public void beforEach(){
+        AppConfig appConfig = new AppConfig();
+        memberService = appConfig.memberService();
+    }
+    
     @Test
     void 가입(){
         //given (~이런게 주어 지면)
