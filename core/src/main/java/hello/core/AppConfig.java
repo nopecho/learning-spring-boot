@@ -17,21 +17,25 @@ public class AppConfig { //AppConfig클래스에서 애플리케이션의 실제
 
     @Bean //스프링 컨테이너(빈 컨테이너 로 관리)
     public MemberService memberService(){
+        System.out.println("call AppConfig.memberService");
         return new MemberServiceImpl(memberRepository());
     }
 
     @Bean
     public MemberRepository memberRepository() {
+        System.out.println("call AppConfig.memberRepository");
         return new MemmoryMemberRepository();
     }
 
     @Bean
     public orderService orderService(){
+        System.out.println("call AppConfig.orderService");
         return new orderServiceImpl(memberRepository(),discountPolicy());
     }
 
     @Bean
     public DiscountPolicy discountPolicy(){
+        System.out.println("call AppConfig.discountPolicy");
 //        return new FixDiscountPolicy();
         return new RateDiscountPolicy(); // 할인정책 변경
     }
