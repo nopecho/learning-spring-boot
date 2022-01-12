@@ -1,11 +1,13 @@
 package hello.core.discount;
 
+import hello.core.MainDiscountPolicy;
 import hello.core.member.Grade;
 import hello.core.member.Member;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 @Component
+@MainDiscountPolicy
 public class FixDiscountPolicy implements DiscountPolicy{
     private int discountFixAmount = 1000; //고정 할인율 1000원
     @Override
