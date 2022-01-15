@@ -2,7 +2,9 @@ package hello.core.scope;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -38,15 +40,19 @@ public class SingletonWithPrototypeTest {
     @Scope("singleton")
     @Configuration
     static class ClientBean{
-        private final PrototypeBean prototypeBean; //생성 시점에 주입 받음 생성자 주입 @Autowired
+//        private final PrototypeBean prototypeBean; //생성 시점에 주입 받음 생성자 주입 @Autowired
 
-        @Autowired
-        public ClientBean(PrototypeBean prototypeBean){
-            this.prototypeBean = prototypeBean;
-            System.out.println("ClientBean.ClientBean = "+this.prototypeBean);
-        }
+        @Autowired //ObjectProvider는 빈을 생성안해도 스프링 컨테이너에서 알아서 주입해줌
+        private ObjectProvider<PrototypeBean> beanObjectProvider; //오브젝트 프로바이더(ObjectProvider) <[원하는 빈 타입]>으로 ApplicationContext(DI 컨테이너)에서 찾아줌
+
+//        @Autowired
+//        public ClientBean(PrototypeBean prototypeBean){
+//            this.prototypeBean = prototypeBean;
+//            System.out.println("ClientBean.ClientBean = "+this.prototypeBean);
+//        }
 
         public int logic(){
+            PrototypeBean prototypeBean = beanObjectProvider.getObject(); //프로바이더.getObject()로 스프링 컨테이너에서 해당 빈을 찾아서 반환함 DL(의존성 조회)
             prototypeBean.addCount();
             int count = prototypeBean.getCount();
             return count;
