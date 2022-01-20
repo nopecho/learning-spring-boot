@@ -26,7 +26,7 @@ public class RequestBodyJsonServlet extends HttpServlet {
 
         HelloDate helloDate = objectMapper.readValue(messageBody, HelloDate.class); //jackson의 readValue API로 JSON형식의 (데이터, 변환할 자바 객체 클래스) 를 파라미터로 받아서 객체로 변환시켜줌
         System.out.println("helloDate.getName() = " + helloDate.getName());
-        System.out.println("helloDate.getAge() = " + helloDate.getAge());
+          System.out.println("helloDate.getAge() = " + helloDate.getAge());
 
         response.getWriter().write("ok");
     }
