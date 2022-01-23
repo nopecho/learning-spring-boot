@@ -5,7 +5,11 @@ import nopecho.servlet.web.frontcontroller.MyView;
 import nopecho.servlet.web.frontcontroller.v3.controller.MemberFormControllerV3;
 import nopecho.servlet.web.frontcontroller.v3.controller.MemberListControllerV3;
 import nopecho.servlet.web.frontcontroller.v3.controller.MemberSaveControllerV3;
+import nopecho.servlet.web.frontcontroller.v4.controller.MemberFromControllerV4;
+import nopecho.servlet.web.frontcontroller.v4.controller.MemberListControllerV4;
+import nopecho.servlet.web.frontcontroller.v4.controller.MemberSaveControllerV4;
 import nopecho.servlet.web.frontcontroller.v5.adapter.ControllerV3HandlerAdapter;
+import nopecho.servlet.web.frontcontroller.v5.adapter.ControllerV4HandlerAdapter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,7 +48,6 @@ public class FrontControllerV5 extends HttpServlet {
         MyView view = viewResolver(viewName);
 
         view.render(mv.getModel() ,request, response);
-
     }
 
     private MyView viewResolver(String viewName) {
@@ -67,11 +70,16 @@ public class FrontControllerV5 extends HttpServlet {
 
     private void initHandlerAdaprers() {
         myhandlerAdapters.add(new ControllerV3HandlerAdapter());
+        myhandlerAdapters.add(new ControllerV4HandlerAdapter());
     }
 
     private void initHandlerMappingMap() {
         handlerMappingMap.put("/front-controller/v5/v3/members/new-form", new MemberFormControllerV3());
         handlerMappingMap.put("/front-controller/v5/v3/members/save", new MemberSaveControllerV3());
         handlerMappingMap.put("/front-controller/v5/v3/members", new MemberListControllerV3());
+
+        handlerMappingMap.put("/front-controller/v5/v4/members/new-form", new MemberFromControllerV4());
+        handlerMappingMap.put("/front-controller/v5/v4/members/save", new MemberSaveControllerV4());
+        handlerMappingMap.put("/front-controller/v5/v4/members", new MemberListControllerV4());
     }
 }
