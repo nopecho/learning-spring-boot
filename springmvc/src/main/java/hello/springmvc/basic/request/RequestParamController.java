@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -77,4 +78,10 @@ public class RequestParamController {
         return "ok";
     }
 
+    @ResponseBody
+    @RequestMapping("/request-param-map")
+    public String requestParamMap(@RequestParam Map<String, Object> paramMap){ //Map으로 파라미터 정보 전부 가져오기 가능
+        log.info("userName={}, userAge={}",paramMap.get("username"),paramMap.get("age"));
+        return "ok";
+    }
 }
