@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -83,20 +84,38 @@ public class BasicItemController {
         return "basic/item";
     }
 
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String saveV5(Item item){ //아예 전부 생략 가능 BUT 어떤 동작을 하는지 명시해주는게 좋다.
         itemRepository.save(item);
         return "basic/item";
     }
 
-    @GetMapping("/{itemId}/edit")
+    /**
+     * Post/Redirect/Get PRG패턴 사용
+     * Post요청이오면 Redirect로 Get방식으로
+     */
+//    @PostMapping("/add")
+    public String savePRG(Item item){
+        itemRepository.save(item);
+        return "redirect:/basic/items/"+item.getId(); //PRG 패턴
+    }
+
+    @PostMapping("/add")
+    public String savePRGparam(Item item, RedirectAttributes redirectAttributes){ //RedirectAttributes로 리다이렉트시 필요값 지정 가능
+        Item saveItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId",saveItem.getId()); //Redirect속성 지정가능
+        redirectAttributes.addAttribute("status",true);
+        return "redirect:/basic/items/{itemId}"; //PRG 패턴
+    }
+
+    @GetMapping("/{itemId}/edit") //Item 수정 Form View 호출 컨트롤러
     public String editForm(@PathVariable Long itemId, Model model){
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item",item);
         return "basic/editForm";
     }
 
-    @PostMapping("/{itemId}/edit")
+    @PostMapping("/{itemId}/edit") //Item 수정 Post요청, PathVariable로 Id값 받고 ModelAttribute로 객체 받아서 모델에 값 넣음
     public String edit(@PathVariable Long itemId, @ModelAttribute Item item){
         itemRepository.update(itemId,item);
         return "redirect:/basic/items/{itemId}";
