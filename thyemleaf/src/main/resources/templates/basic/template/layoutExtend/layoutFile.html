@@ -1,0 +1,21 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout (title,content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/awesomeapp.css}">
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}">
+    <script type="text/javascript" th:src="@{/sh/script/codebase.js}"></script>
+
+    <title th:replace="${title}">Document</title>
+</head>
+<body>
+<h1>여기는 고정</h1>
+<div th:replace="${content}">
+    메인 컨텐트
+</div>
+<footer> 푸터 입니다.</footer>
+</body>
+</html>
