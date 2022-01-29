@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=chrome">
+    <title>Document</title>
+</head>
+<body>
+    <h1>th:text 컨텐츠에 데이터 출력</h1>
+    <ul>
+        <li>
+            th:text 사용 = <span th:text="${data}">DATA</span>
+        </li>
+        <li>
+            컨텐츠안에 직접 넣기  = [[${data}]] <span th:inline="none">( [[${}]] 으로 태그안이 아닌 내용에서 바로 사용가능)</span>
+        </li>
+    </ul>
+</body>
+</html>
