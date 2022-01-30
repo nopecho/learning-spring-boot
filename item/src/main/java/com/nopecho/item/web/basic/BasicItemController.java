@@ -36,7 +36,8 @@ public class BasicItemController {
     }
 
     @GetMapping("/add") //Item 등록 view 이동 핸들러 메서드
-    public String addForm(){
+    public String addForm(Model model){
+        model.addAttribute("item",new Item());
         return "basic/addForm";
     }
 
@@ -101,7 +102,7 @@ public class BasicItemController {
     }
 
     @PostMapping("/add")
-    public String savePRGparam(Item item, RedirectAttributes redirectAttributes){ //RedirectAttributes로 리다이렉트시 필요값 지정 가능
+    public String savePRGparam(@ModelAttribute Item item, RedirectAttributes redirectAttributes){ //RedirectAttributes로 리다이렉트시 필요값 지정 가능
         Item saveItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId",saveItem.getId()); //Redirect속성 지정가능
         redirectAttributes.addAttribute("status",true);

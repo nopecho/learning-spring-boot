@@ -13,30 +13,23 @@
 <div class="container">
     <div class="py-5 text-center">
         <h2>상품 수정 폼</h2> </div>
-    <form th:action
-            action="item.html" method="post">
+    <form th:action th:object="${item}" action="item.html" method="post">
         <div>
             <label for="id">상품 ID</label>
-            <input type="text" id="id" name="id" class="form-control"
-                   th:value="${item.id}"
-                   value="1" readonly>
+            <input type="text" class="form-control" th:field="*{id}" readonly>
         </div>
         <div>
             <label for="itemName">상품명</label>
-            <input type="text" id="itemName" name="itemName" class="form-control"
-                   th:value="${item.itemName}"
-                   value="상품A">
-        </div> <div>
-        <label for="price">가격</label>
-        <input type="text" id="price" name="price" class="form-control"
-               th:value="${item.price}"
-               value="10000">
-    </div> <div>
-        <label for="quantity">수량</label>
-        <input type="text" id="quantity" name="quantity" class="form-control"
-               th:value="${item.quantity}"
-               value="10">
-    </div>
+            <input type="text" class="form-control" th:field="*{itemName}">
+        </div>
+        <div>
+            <label for="price">가격</label>
+            <input type="text" class="form-control" th:field="*{price}">
+        </div>
+        <div>
+            <label for="quantity">수량</label>
+            <input type="text" class="form-control" th:field="*{quantity}">
+        </div>
         <hr class="my-4">
         <div class="row">
             <div class="col">
@@ -46,7 +39,8 @@
             <div class="col">
                 <button class="w-100 btn btn-secondary btn-lg"
                         th:onclick="|location.href='@{/basic/items/{itemId}(itemId=${item.id})}'|"
-                        onclick="location.href='item.html'" type="button">취소</button> </div>
+                        onclick="location.href='item.html'" type="button">취소</button>
+            </div>
         </div>
     </form>
 </div> <!-- /container -->
