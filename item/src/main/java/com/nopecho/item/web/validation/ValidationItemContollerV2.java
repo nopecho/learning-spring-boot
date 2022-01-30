@@ -102,10 +102,13 @@ public class ValidationItemContollerV2 {
         return "redirect:/validation/v2/items/{itemId}"; //PRG 패턴
     }
 
-    @PostMapping("/add") //실제 저장하는 로직
+//    @PostMapping("/add") //실제 저장하는 로직
     public String addItemV2(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) { //BindingResult => ModelAttribute에서 객체 바인딩된 결과를 담고있는 객체
 
-        //검증 로직
+        /**
+         * FieldError , ObjectError의 생성자로 값을 담을 수 있다.
+         * new FieldError(객체이름,필드명,실패값,바인딩 실패 여부,코드,인자,메시지) 등의 생성자로 다양한 정보 BindigResult객체에 삽입 가능
+         */
         if (!StringUtils.hasText(item.getItemName())) {
             bindingResult.addError(new FieldError("item","itemName",item.getItemName(),false,null,null,"상품 이름은 필수 입니다."));
         }
@@ -120,6 +123,41 @@ public class ValidationItemContollerV2 {
             int result = item.getPrice() * item.getQuantity();
             if (result < 10000) {
                 bindingResult.addError(new ObjectError("item",null,null,"가격*수량 의 합은 10,000원 이상이어야 합니다. / 현재값 = "+result));
+            }
+        }
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
+            return "validation/v2/addForm";
+        }
+
+        //성공 로직
+        Item saveItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", saveItem.getId()); //Redirect속성 지정가능
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v2/items/{itemId}"; //PRG 패턴
+    }
+
+    @PostMapping("/add") //실제 저장하는 로직
+    public String addItemV3(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) { //BindingResult => ModelAttribute에서 객체 바인딩된 결과를 담고있는 객체
+
+        /**
+         * FieldError , ObjectError의 생성자로 값을 담을 수 있다.
+         * new FieldError(객체이름,필드명,실패값,바인딩 실패 여부,코드,인자,메시지) 등의 생성자로 다양한 정보 BindigResult객체에 삽입 가능
+         */
+        if (!StringUtils.hasText(item.getItemName())) {
+            bindingResult.addError(new FieldError("item","itemName",item.getItemName(),false,new String[]{"required.item.itemName"},null,null));
+        }
+        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
+            bindingResult.addError(new FieldError("item","price",item.getPrice(),false,new String[]{"range.item.price"},new Object[]{1000,1000000},null));
+        }
+        if (item.getQuantity() == null || item.getQuantity() >= 9999) {
+            bindingResult.addError(new FieldError("item","quantity",item.getQuantity(),false,new String[]{"max.item.quantity"},new Object[]{9999},null));
+        }
+        //특정 필드가 아닌 복합 룰 검증
+        if (item.getPrice() != null && item.getQuantity() != null) {
+            int result = item.getPrice() * item.getQuantity();
+            if (result < 10000) {
+                bindingResult.addError(new ObjectError("item",new String[]{"totalPriceMin"},new Object[]{10000,result},null));
             }
         }
         if (bindingResult.hasErrors()) {
