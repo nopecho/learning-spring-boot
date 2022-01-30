@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -67,31 +70,60 @@ public class ValidationItemContollerV2 {
         return "validation/v2/addForm";
     }
 
-    @PostMapping("/add") //실제 저장하는 로직
-    public String savePRGparam(@ModelAttribute Item item, RedirectAttributes redirectAttributes, Model model) { //Model은 오류를 담을 Model
-        //검증 오류 결과 보관
-        Map<String, String> errors = new HashMap<>();
+//    @PostMapping("/add") //실제 저장하는 로직
+    public String addItemV1(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) { //BindingResult => ModelAttribute에서 객체 바인딩된 결과를 담고있는 객체
 
         //검증 로직
         if (!StringUtils.hasText(item.getItemName())) {
-            errors.put("itemName", "상품 이름은 필수입니다.");
+            bindingResult.addError(new FieldError("item","itemName","상품 이름은 필수 입니다."));
         }
         if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
-            errors.put("price", "가격은 1,000 ~ 1,000,000까지 허용");
+            bindingResult.addError(new FieldError("item","price","가격은 1000~1000000"));
         }
         if (item.getQuantity() == null || item.getQuantity() >= 9999) {
-            errors.put("quantity", "수량은 최대 9,999까지만 허용");
+            bindingResult.addError(new FieldError("item","quantity","수량은 9999"));
         }
         //특정 필드가 아닌 복합 룰 검증
         if (item.getPrice() != null && item.getQuantity() != null) {
             int result = item.getPrice() * item.getQuantity();
             if (result < 10000) {
-                errors.put("globalError", "가격*수량 의 합은 10,000원 이상이어야 합니다. / 현재값 = " + result);
+                bindingResult.addError(new ObjectError("item","가격*수량 의 합은 10,000원 이상이어야 합니다. / 현재값 = "+result));
             }
         }
-        if (hasErrors(errors)) {
-            log.info("errors = {}", errors);
-            model.addAttribute("errors", errors);
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
+            return "validation/v2/addForm";
+        }
+
+        //성공 로직
+        Item saveItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", saveItem.getId()); //Redirect속성 지정가능
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v2/items/{itemId}"; //PRG 패턴
+    }
+
+    @PostMapping("/add") //실제 저장하는 로직
+    public String addItemV2(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) { //BindingResult => ModelAttribute에서 객체 바인딩된 결과를 담고있는 객체
+
+        //검증 로직
+        if (!StringUtils.hasText(item.getItemName())) {
+            bindingResult.addError(new FieldError("item","itemName",item.getItemName(),false,null,null,"상품 이름은 필수 입니다."));
+        }
+        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
+            bindingResult.addError(new FieldError("item","price",item.getPrice(),false,null,null,"가격은 1000~1000000"));
+        }
+        if (item.getQuantity() == null || item.getQuantity() >= 9999) {
+            bindingResult.addError(new FieldError("item","quantity",item.getQuantity(),false,null,null,"수량은 9999"));
+        }
+        //특정 필드가 아닌 복합 룰 검증
+        if (item.getPrice() != null && item.getQuantity() != null) {
+            int result = item.getPrice() * item.getQuantity();
+            if (result < 10000) {
+                bindingResult.addError(new ObjectError("item",null,null,"가격*수량 의 합은 10,000원 이상이어야 합니다. / 현재값 = "+result));
+            }
+        }
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
             return "validation/v2/addForm";
         }
 
