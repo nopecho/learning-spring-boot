@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Getter @Setter
+@Data
 public class Item {
 
     private Long Id;

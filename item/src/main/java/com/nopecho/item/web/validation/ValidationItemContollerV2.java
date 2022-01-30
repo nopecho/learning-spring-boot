@@ -137,13 +137,11 @@ public class ValidationItemContollerV2 {
         return "redirect:/validation/v2/items/{itemId}"; //PRG 패턴
     }
 
-    @PostMapping("/add") //실제 저장하는 로직
-    public String addItemV3(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) { //BindingResult => ModelAttribute에서 객체 바인딩된 결과를 담고있는 객체
+//    @PostMapping("/add") //실제 저장하는 로직
+    public String addItemV3(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        log.info("objectName = {}",bindingResult.getObjectName());
+        log.info("target = {}",bindingResult.getTarget());
 
-        /**
-         * FieldError , ObjectError의 생성자로 값을 담을 수 있다.
-         * new FieldError(객체이름,필드명,실패값,바인딩 실패 여부,코드,인자,메시지) 등의 생성자로 다양한 정보 BindigResult객체에 삽입 가능
-         */
         if (!StringUtils.hasText(item.getItemName())) {
             bindingResult.addError(new FieldError("item","itemName",item.getItemName(),false,new String[]{"required.item.itemName"},null,null));
         }
@@ -158,6 +156,45 @@ public class ValidationItemContollerV2 {
             int result = item.getPrice() * item.getQuantity();
             if (result < 10000) {
                 bindingResult.addError(new ObjectError("item",new String[]{"totalPriceMin"},new Object[]{10000,result},null));
+            }
+        }
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
+            return "validation/v2/addForm";
+        }
+
+        //성공 로직
+        Item saveItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", saveItem.getId()); //Redirect속성 지정가능
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v2/items/{itemId}"; //PRG 패턴
+    }
+
+    @PostMapping("/add") //실제 저장하는 로직
+    public String addItemV4(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        log.info("objectName = {}",bindingResult.getObjectName());
+        log.info("target = {}",bindingResult.getTarget());
+        /**
+         * BindingResult는 검증해야 할 객체를 이미 컨트롤러에 넘어오기 전에 알고 있음(DispatcherServlet에서 처리)
+         * (BindingResult는 @ModelAttribute의 객체(바인딩될)를 검증 하기위해 사용되는 스프링 제공 객체) Model에 BindingResult값이 같이 단겨서 View로 넘어감
+         * addError(new FieldError, new ObjectError)로 직접 오류 bindingResult객체에 담아도 되지만 더 편리하게 제공하는 기능이 reject
+         * BindingResult.rejectVlue(필드값 검증)의 파라미터로 검증 필드, 에러 코드를 넘겨서 처리가능
+         * BindingResult.reject(필드값 외 검증)의 파라미터로 에러 코드를 넘겨서 처리가능
+         */
+        if (!StringUtils.hasText(item.getItemName())) {
+            bindingResult.rejectValue("itemName","required");
+        }
+        if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 1000000) {
+            bindingResult.rejectValue("price","range",new Object[]{1000,1000000},null);
+        }
+        if (item.getQuantity() == null || item.getQuantity() >= 9999) {
+            bindingResult.rejectValue("quantity","max",new Object[]{9999},null);
+        }
+        //특정 필드가 아닌 복합 룰 검증
+        if (item.getPrice() != null && item.getQuantity() != null) {
+            int result = item.getPrice() * item.getQuantity();
+            if (result < 10000) {
+                bindingResult.reject("totalPriceMin",new Object[]{10000,result},null);
             }
         }
         if (bindingResult.hasErrors()) {
