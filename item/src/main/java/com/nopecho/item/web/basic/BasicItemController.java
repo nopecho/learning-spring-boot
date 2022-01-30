@@ -1,7 +1,9 @@
 package com.nopecho.item.web.basic;
 
+import com.nopecho.item.domain.item.DeliveryCode;
 import com.nopecho.item.domain.item.Item;
 import com.nopecho.item.domain.item.ItemRepository;
+import com.nopecho.item.domain.item.ItemType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -11,7 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor //RequiredArgsConstructor -> final붙은 필드변수 생성자
@@ -20,6 +25,34 @@ import java.util.List;
 public class BasicItemController {
 
     private final ItemRepository itemRepository;
+
+    /**
+     * 메서드 레벨에서 @ModelAttribute("[model에서 조회할 이름]") 애노테이션으로 메소드를 등록 가능
+     * -> @ModelAttribute를 메서드로 등록 해놓으면 해당 컨트롤러(클래스)의 모든 핸들러메서드들의 model에 해당 값이 담긴다.
+     */
+    @ModelAttribute("regions")
+    public Map<String,String> regions(){
+        Map<String,String> regions = new LinkedHashMap<>();
+        regions.put("SEOUL", "서울");
+        regions.put("DAEGU", "대구");
+        regions.put("JEJU", "제주");
+        return regions;
+    }
+
+    @ModelAttribute("itemType")
+    public ItemType[] itemType(){
+        ItemType[] values = ItemType.values();
+        return values;
+    }
+
+    @ModelAttribute("deliveryCodes")
+    public List<DeliveryCode> deliveryCodes(){
+        List<DeliveryCode> deliveryCodes = new ArrayList<>();
+        deliveryCodes.add(new DeliveryCode("FAST","빠른 배송"));
+        deliveryCodes.add(new DeliveryCode("NOMAL","보통 배송"));
+        deliveryCodes.add(new DeliveryCode("SLOW","느린 배송"));
+        return deliveryCodes;
+    }
 
     @GetMapping //Item 전체 조회 핸들러 메서드
     public String items(Model model){
@@ -103,6 +136,10 @@ public class BasicItemController {
 
     @PostMapping("/add")
     public String savePRGparam(@ModelAttribute Item item, RedirectAttributes redirectAttributes){ //RedirectAttributes로 리다이렉트시 필요값 지정 가능
+        log.info("item open = {}",item.getOpen());
+        log.info("item regions = {}",item.getRegions());
+        log.info("item itemType = {}",item.getItemType());
+        log.info("item deliveryCode = {}",item.getDeliveryCode());
         Item saveItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId",saveItem.getId()); //Redirect속성 지정가능
         redirectAttributes.addAttribute("status",true);
