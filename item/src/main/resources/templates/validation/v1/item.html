@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+            href="../css/bootstrap.min.css" rel="stylesheet">
+    <style>         .container {
+        max-width: 560px;
+    } </style>
+</head>
+<body>
+<div class="container">
+    <div class="py-5 text-center">
+        <h2 th:text="#{page.item}">상품 상세</h2>
+    </div>
+    <h2 th:if="${param.status}" th:text="저장완료"></h2>
+    <div>
+        <label for="itemId" th:text="#{label.item.id}">상품 ID</label>
+        <input type="text" id="itemId" name="itemId" class="form-control"
+               th:value="${item.id}"
+               value="1" readonly>
+    </div>
+    <div>
+    <label for="itemName" th:text="#{label.item.itemName}">상품명</label>
+    <input type="text" id="itemName" name="itemName" class="form-control"
+           th:value="${item.itemName}"
+           value="상품A" readonly>
+    </div>
+    <div>
+        <label for="price" th:text="#{label.item.price}">가격</label>
+        <input type="text" id="price" name="price" class="form-control"
+               th:value="${item.price}"
+               value="10000" readonly>
+    </div>
+    <div>
+    <label for="quantity" th:text="#{label.item.quantity}">수량</label>
+    <input type="text" id="quantity" name="quantity" class="form-control"
+           th:value="${item.quantity}"
+           value="10" readonly>
+    </div>
+    <hr class="my-4">
+    <div>판매 여부</div>
+    <div>
+        <div class="form-check">
+            <input type="checkbox" id="open" th:field="${item.open}" class="form-check-input" disabled>
+            <label for="open" class="form-check-label">판매 오픈</label>
+        </div>
+    </div>
+
+    <div>
+        <div>등록 지역</div>
+        <div th:each="region : ${regions}" class="form-check form-check-inline">
+            <input type="checkbox" th:field="${item.regions}" th:value="${region.key}"
+                   class="form-check-input" disabled>
+            <label th:for="${#ids.prev('regions')}"
+                   th:text="${region.value}" class="form-check-label">서울</label>
+        </div>
+    </div>
+
+    <div>
+        <div>상품 타입</div>
+        <div th:each="type : ${itemType}" class="form-check form-check-inline">
+            <input type="radio" th:field="${item.itemType}" th:value="${type.name()}" class="form-check-input" disabled>
+            <label th:for="${#ids.prev('itemType')}"
+                   th:text="${type.description}" class="form-check-label">bkbk</label>
+        </div>
+    </div>
+
+    <div>
+        <div>배송 방식</div>
+            <select th:field="${item.deliveryCode}" class="form-select-sm" disabled>
+                <option value="">배송방식 선택쓰</option>
+                <option th:each=" delivery :${deliveryCodes}" th:value="${delivery.code}" th:text="${delivery.displayName}"></option>
+            </select>
+    </div>
+
+
+    <div class="row">
+        <div class="col">
+            <button class="w-100 btn btn-primary btn-lg"
+                    th:onclick="|location.href='@{/validation/v1/items/{itemId}/edit(itemId=${item.id})}'|"
+                    onclick="location.href='editForm.html'"
+                    type="button" th:text="#{page.updateItem}">상품 수정
+            </button>
+        </div>
+        <div class="col">
+            <button class="w-100 btn btn-secondary btn-lg"
+                    th:onclick="|location.href='@{/validation/v1/items}'|"
+                    onclick="location.href='items.html'" type="button" th:text="#{page.items}">목록으로
+            </button>
+        </div>
+    </div>
+</div> <!-- /container -->
+</body>
+</html>
