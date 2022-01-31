@@ -1,9 +1,6 @@
 package com.nopecho.item.web.validation;
 
-import com.nopecho.item.domain.item.DeliveryCode;
-import com.nopecho.item.domain.item.Item;
-import com.nopecho.item.domain.item.ItemRepository;
-import com.nopecho.item.domain.item.ItemType;
+import com.nopecho.item.domain.item.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -76,8 +73,27 @@ public class ValidationItemContollerV3 {
      * @param item @Validated 애노테이션으로 해당 객체를 @ModelAttribute로 바인딩할때 검증 로직 수행
      * @param bindingResult @Validated의 오류 결과를 BindingResult객체에 담음 (Model에 담김)
      */
-    @PostMapping("/add")
+//    @PostMapping("/add")
     public String addItem(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if(item.getPrice() != null && item.getQuantity() != null){
+            int totalPeice = item.getPrice() * item.getQuantity();
+            if(totalPeice < 10000){
+                bindingResult.reject("totalPriceMin",new Object[]{10000,totalPeice},null);
+            }
+        }
+
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
+            return "validation/v3/addForm";
+        }
+        Item saveItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", saveItem.getId()); //Redirect속성 지정가능
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v3/items/{itemId}"; //PRG 패턴
+    }
+
+    @PostMapping("/add")
+    public String addItemV2(@Validated(SaveCheck.class) @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if(item.getPrice() != null && item.getQuantity() != null){
             int totalPeice = item.getPrice() * item.getQuantity();
             if(totalPeice < 10000){
@@ -102,8 +118,26 @@ public class ValidationItemContollerV3 {
         return "validation/v3/editForm";
     }
 
-    @PostMapping("/{itemId}/edit")
+//    @PostMapping("/{itemId}/edit")
     public String edit(@PathVariable Long itemId, @Validated @ModelAttribute Item item,BindingResult bindingResult) {
+        itemRepository.update(itemId, item);
+        if(item.getPrice() != null && item.getQuantity() != null){
+            int totalPeice = item.getPrice() * item.getQuantity();
+            if(totalPeice < 10000){
+                bindingResult.reject("totalPriceMin",new Object[]{10000,totalPeice},null);
+            }
+        }
+
+        if(bindingResult.hasErrors()){
+            log.info("error = {}",bindingResult);
+            return "validation/v3/editForm";
+        }
+
+        return "redirect:/validation/v3/items/{itemId}";
+    }
+
+    @PostMapping("/{itemId}/edit")
+    public String editV2(@PathVariable Long itemId, @Validated(UpdateCheck.class) @ModelAttribute Item item,BindingResult bindingResult) {
         itemRepository.update(itemId, item);
         if(item.getPrice() != null && item.getQuantity() != null){
             int totalPeice = item.getPrice() * item.getQuantity();
