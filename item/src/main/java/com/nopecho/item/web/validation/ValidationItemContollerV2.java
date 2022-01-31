@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -181,6 +182,9 @@ public class ValidationItemContollerV2 {
          * BindingResult.rejectVlue(필드값 검증)의 파라미터로 검증 필드, 에러 코드를 넘겨서 처리가능
          * BindingResult.reject(필드값 외 검증)의 파라미터로 에러 코드를 넘겨서 처리가능
          */
+
+        // ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult,"itemName","required"); => 단순 공백 검증일경우 한줄로 가능
+
         if (!StringUtils.hasText(item.getItemName())) {
             bindingResult.rejectValue("itemName","required");
         }
