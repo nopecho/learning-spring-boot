@@ -13,6 +13,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -26,6 +28,15 @@ import java.util.*;
 public class ValidationItemContollerV2 {
 
     private final ItemRepository itemRepository;
+    private final ItemValidator itemValidator;
+
+    @InitBinder // @InitBinder 애노테이션으로 해당 컨트롤러가 호출 될때마다 Validator를 추가 할 수 있다
+    public void init(WebDataBinder dataBinder){ //WebDataBinder가 실질적으로 스프링에서 제공하는 바인딩을 도와주는 객체
+        dataBinder.addValidators(itemValidator);
+        log.info("init WebBinder = {}",dataBinder.getTarget());
+        log.info("init WebBinder = {}",dataBinder.getObjectName());
+        log.info("init WebBinder = {}",dataBinder.getFieldDefaultPrefix());
+    }
 
     @ModelAttribute("regions")
     public Map<String, String> regions() {
@@ -71,7 +82,7 @@ public class ValidationItemContollerV2 {
         return "validation/v2/addForm";
     }
 
-//    @PostMapping("/add") //실제 저장하는 로직
+//    @PostMapping("/add")
     public String addItemV1(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) { //BindingResult => ModelAttribute에서 객체 바인딩된 결과를 담고있는 객체
 
         //검증 로직
@@ -103,7 +114,7 @@ public class ValidationItemContollerV2 {
         return "redirect:/validation/v2/items/{itemId}"; //PRG 패턴
     }
 
-//    @PostMapping("/add") //실제 저장하는 로직
+//    @PostMapping("/add")
     public String addItemV2(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) { //BindingResult => ModelAttribute에서 객체 바인딩된 결과를 담고있는 객체
 
         /**
@@ -138,7 +149,7 @@ public class ValidationItemContollerV2 {
         return "redirect:/validation/v2/items/{itemId}"; //PRG 패턴
     }
 
-//    @PostMapping("/add") //실제 저장하는 로직
+//    @PostMapping("/add")
     public String addItemV3(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         log.info("objectName = {}",bindingResult.getObjectName());
         log.info("target = {}",bindingResult.getTarget());
@@ -171,7 +182,7 @@ public class ValidationItemContollerV2 {
         return "redirect:/validation/v2/items/{itemId}"; //PRG 패턴
     }
 
-    @PostMapping("/add") //실제 저장하는 로직
+//    @PostMapping("/add")
     public String addItemV4(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         log.info("objectName = {}",bindingResult.getObjectName());
         log.info("target = {}",bindingResult.getTarget());
@@ -213,8 +224,36 @@ public class ValidationItemContollerV2 {
         return "redirect:/validation/v2/items/{itemId}"; //PRG 패턴
     }
 
-    private boolean hasErrors(Map<String, String> errors) {
-        return !errors.isEmpty();
+//    @PostMapping("/add")
+    public String addItemV5(@ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+
+        itemValidator.validate(item,bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
+            return "validation/v2/addForm";
+        }
+        Item saveItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", saveItem.getId()); //Redirect속성 지정가능
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v2/items/{itemId}"; //PRG 패턴
+    }
+
+    /**
+     * @param item @Validated 애노테이션으로 해당 객체를 @ModelAttribute로 바인딩할때 검증 로직 수행
+     * @param bindingResult @Validated의 오류 결과를 BindingResult객체에 담음 (Model에 담김)
+     */
+    @PostMapping("/add")
+    public String addItemV6(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            log.info("errors = {}", bindingResult);
+            return "validation/v2/addForm";
+        }
+        Item saveItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", saveItem.getId()); //Redirect속성 지정가능
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v2/items/{itemId}"; //PRG 패턴
     }
 
     @GetMapping("/{itemId}/edit")
