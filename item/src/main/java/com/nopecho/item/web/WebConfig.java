@@ -1,5 +1,6 @@
 package com.nopecho.item.web;
 
+import com.nopecho.item.web.argumentresolver.LoginMemberArgumentResolver;
 import com.nopecho.item.web.filter.LogFilter;
 import com.nopecho.item.web.filter.LoginCheckFilter;
 import com.nopecho.item.web.interceptor.LogInterceptor;
@@ -7,10 +8,12 @@ import com.nopecho.item.web.interceptor.LoginCheckInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.Filter;
+import java.util.List;
 
 @Configuration //Bean 설정 정보 애노테이션
 public class WebConfig implements WebMvcConfigurer {
@@ -35,6 +38,14 @@ public class WebConfig implements WebMvcConfigurer {
                         "/logout" ,
                         "/*.ico" ,
                         "/error");
+    }
+
+    /**
+     * 사용자 정의 ArgumentResolver 정보 등록 => addArgumentResolvers @Override 해야됨
+     */
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new LoginMemberArgumentResolver());
     }
 
     /**

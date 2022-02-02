@@ -2,6 +2,7 @@ package com.nopecho.item.web;
 
 import com.nopecho.item.domain.member.Member;
 import com.nopecho.item.domain.member.MemberRepository;
+import com.nopecho.item.web.argumentresolver.Login;
 import com.nopecho.item.web.session.SessionManager;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -70,12 +71,21 @@ public class HomeController {
         return "loginHome";
     }
 
-    @GetMapping("/")
+//    @GetMapping("/")
     public String home5(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member member , Model model) {
         if (member == null) {
             return "home";
         }
 
+        model.addAttribute("member", member);
+        return "loginHome";
+    }
+
+    @GetMapping("/")
+    public String homeV6ArgumentResolver(@Login Member member , Model model) {
+        if (member == null) {
+            return "home";
+        }
         model.addAttribute("member", member);
         return "loginHome";
     }
