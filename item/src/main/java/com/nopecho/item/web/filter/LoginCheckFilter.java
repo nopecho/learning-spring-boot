@@ -34,8 +34,8 @@ public class LoginCheckFilter implements Filter {
                 if(session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null){
                     log.info("미 인증 사용자 요청 = {}",requestURI);
 
-                    httpResponse.sendRedirect("/login?redirectURL="+requestURI);
-                    return;
+                    httpResponse.sendRedirect("/login?redirectURL="+requestURI); //어느 요청에서 온 건지 확인
+                    return; //return 으로 다음 filter나 servlet요청 하지않고 해당 필터 종료
                 }
             }
             chain.doFilter(request,response);
