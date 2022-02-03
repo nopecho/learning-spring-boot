@@ -3,6 +3,7 @@ package nopecho.typeconverter.controller;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import nopecho.typeconverter.type.IpPort;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -44,6 +45,13 @@ public class TestController {
         }
         log.info("userDto = {}",userDto);
         return userDto;
+    }
+
+    @GetMapping("/ip-port")
+    public String ipPort(@RequestParam IpPort data){
+        log.info("ip = {}",data.getIp());
+        log.info("port = {}",data.getPort());
+        return data.toString();
     }
 
     @Data

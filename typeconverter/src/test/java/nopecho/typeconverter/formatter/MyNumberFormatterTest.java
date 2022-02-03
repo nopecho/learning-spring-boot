@@ -1,0 +1,28 @@
+package nopecho.typeconverter.formatter;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+class MyNumberFormatterTest {
+
+    MyNumberFormatter formatter = new MyNumberFormatter();
+
+    @Test
+    void parse() throws ParseException {
+        Number result = formatter.parse("1,000", Locale.ENGLISH);
+        assertThat(result).isEqualTo(1000L);
+    }
+
+    @Test
+    void print() {
+        String result = formatter.print(100000L, Locale.KOREA);
+        assertThat(result).isEqualTo("100,000");
+    }
+}
