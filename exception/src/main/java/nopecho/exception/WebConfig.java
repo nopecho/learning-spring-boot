@@ -3,6 +3,7 @@ package nopecho.exception;
 import nopecho.exception.filter.LogFilter;
 import nopecho.exception.interceptor.LogInterceptor;
 import nopecho.exception.resolver.MyHandlerExceptionResolver;
+import nopecho.exception.resolver.UserHandlerExceptionResolver;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
         resolvers.add(new MyHandlerExceptionResolver());
+        resolvers.add(new UserHandlerExceptionResolver());
     }
 
     @Bean
