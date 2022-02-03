@@ -22,6 +22,9 @@ public class ApiExceptionController {
         if(id.equals("404")){
             response.sendError(404,"404Errorrr!!");
         }
+        if(id.equals("bad")){
+            throw new IllegalArgumentException("잘못 된 입력");
+        }
         return new MemberDto(id,"Nopecho");
     }
 

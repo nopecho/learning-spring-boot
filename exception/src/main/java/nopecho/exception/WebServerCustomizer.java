@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * SpringBoot가 제공하는 WebServerCustom객체를 implements
  */
-@Component
+//@Component
 public class WebServerCustomizer implements WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
 
     @Override
