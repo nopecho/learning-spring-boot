@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.UserDto;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
 import lombok.AllArgsConstructor;
@@ -21,9 +22,10 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public User saveUser(@ModelAttribute User user){
-        log.info("user = {}",user.getUserName());
-        User save = service.save(user);
+    public User saveUser(@ModelAttribute UserDto userDto){
+        log.info("user = {}",userDto.getUserName());
+        User save = service.save(userDto.toEntity());
         return save;
     }
+
 }
