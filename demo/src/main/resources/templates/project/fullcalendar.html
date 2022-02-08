@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <link rel="stylesheet" href="/calendar.css">
+    <script src="/calendar.js"></script>
+    <script src="/locales-all.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div class="container-fluid h-auto align-items-center">
+        <div class="container-fluid w-50" id="calendar"></div>
+
+        <form class="form-control" th:action method="post" th:object="${bookingDto}">
+            <input type="text" th:field="*{bookingDate}" placeholder="예약 날짜">
+            <input type="text" th:field="*{booker}" placeholder="예약자명">
+            <input type="text" th:field="*{phone}" placeholder="전화번호">
+            <input type="text" th:field="*{personnel}" placeholder="예약 인원">
+            <button type="submit">booking</button>
+        </form>
+    </div>
+
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            let calendarEl = document.getElementById('calendar');
+            let calendar = new FullCalendar.Calendar(calendarEl, {
+                themeSystem : 'bootstrap',
+                selectable : true,
+                unselectAuto : false,
+                dateClick : function (e){
+                    const date = e.dateStr;
+                    const target = document.getElementById('bookingDate')
+                    target.value = date;
+                    console.log(e.dateStr)
+                }
+            });
+            calendar.render();
+        });
+    </script>
+
+</body>
+</html>
