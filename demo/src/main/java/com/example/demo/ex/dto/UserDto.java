@@ -1,6 +1,6 @@
-package com.example.demo.dto;
+package com.example.demo.ex.dto;
 
-import com.example.demo.entity.User;
+import com.example.demo.ex.entity.User;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 

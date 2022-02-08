@@ -1,7 +1,7 @@
-package com.example.demo.service;
+package com.example.demo.ex.service;
 
-import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.ex.entity.User;
+import com.example.demo.ex.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

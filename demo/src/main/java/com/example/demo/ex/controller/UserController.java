@@ -1,9 +1,8 @@
-package com.example.demo.controller;
+package com.example.demo.ex.controller;
 
-import com.example.demo.dto.UserDto;
-import com.example.demo.entity.User;
-import com.example.demo.service.UserService;
-import lombok.AllArgsConstructor;
+import com.example.demo.ex.dto.UserDto;
+import com.example.demo.ex.entity.User;
+import com.example.demo.ex.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

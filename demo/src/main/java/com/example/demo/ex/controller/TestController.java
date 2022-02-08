@@ -1,11 +1,11 @@
-package com.example.demo.controller;
+package com.example.demo.ex.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class testController {
+public class TestController {
 
     @ResponseBody
     @GetMapping("/test")
