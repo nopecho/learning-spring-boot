@@ -1,6 +1,7 @@
 package com.example.demo.project.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Getter @NoArgsConstructor @AllArgsConstructor
 @Entity
+@Builder
 public class Host {
 
     @Id
