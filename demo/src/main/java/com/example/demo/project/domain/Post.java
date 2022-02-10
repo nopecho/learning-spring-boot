@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Getter@AllArgsConstructor@NoArgsConstructor
+@Getter
+@NoArgsConstructor
 public class Post {
 
     @Id
@@ -18,6 +19,17 @@ public class Post {
     private String title;
 
     @Column(nullable = false)
-    private String body;
+    private String text;
 
+    @Column(nullable = false)
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "host_id")
+    private Host host;
+
+//    @Column
+//    @OneToOne
+//    @JoinColumn(name = "photo_id")
+//    private Photo photo;
 }

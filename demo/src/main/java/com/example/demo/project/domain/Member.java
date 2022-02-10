@@ -11,25 +11,28 @@ import javax.persistence.Id;
 
 @Getter @AllArgsConstructor @NoArgsConstructor
 @Entity
-public class Users {
+public class Member {
 
     @Id
     @GeneratedValue
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String userId;
+    private String LoginId;
 
     @Column(nullable = false, unique = true)
-    private String userPassword;
+    private String password;
 
     @Column(nullable = false)
-    private String userName;
+    private String Name;
 
     @Column
     private String email;
 
     @Column
     private String phone;
+
+    @Column
+    private Auth role;
 
 }

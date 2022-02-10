@@ -22,9 +22,9 @@ public class BookingDto {
 
     public Booking toEntity(){
         return Booking.builder()
-                .booker(this.booker)
-                .phone(this.phone)
-                .personnel(this.personnel)
+                .bookingName(this.booker)
+                .bookingPhone(this.phone)
+                .personCount(this.personnel)
                 .bookingDate(this.bookingDate)
                 .build();
     }

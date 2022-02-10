@@ -1,6 +1,5 @@
 package com.example.demo.project.domain;
 
-import com.example.demo.ex.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,14 +18,14 @@ public class Booking {
     private Long id;
 
     @Column(nullable = false)
-    private String booker;
+    private String bookingName;
 
     @Column(nullable = false)
-    private String phone;
+    private String bookingPhone;
 
     @Column(nullable = false)
     private LocalDate bookingDate;
 
     @Column(nullable = false, length = 10)
-    private int personnel;
+    private int personCount;
 }
