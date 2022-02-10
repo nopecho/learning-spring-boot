@@ -21,7 +21,7 @@ public class Host {
     @Column(nullable = false, unique = true)
     private String LoginId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
